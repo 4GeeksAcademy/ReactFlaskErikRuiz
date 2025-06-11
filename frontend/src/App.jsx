@@ -1,11 +1,10 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Private from "./pages/Private";
-import Navbar from "./components/Navbar";
 
-const App = () => {
+function App() {
   return (
     <BrowserRouter>
       <Navbar />
@@ -16,6 +15,6 @@ const App = () => {
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;

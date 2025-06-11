@@ -7,21 +7,23 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/token", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
+  e.preventDefault();
 
-        if (response.ok) {
-            const data = await response.json();
-            sessionStorage.setItem("token", data.token);
-            navigate("/private");
-        } else {
-            alert("Login fallido");
-        }
-    };
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+    sessionStorage.setItem("token", data.token);
+    navigate("/private");
+  } else {
+    alert(data.msg || "Error al iniciar sesión");
+  }
+};
+
 
     return (
         <form onSubmit={handleSubmit}>
