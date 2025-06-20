@@ -8,8 +8,8 @@ const Private = () => {
         const token = sessionStorage.getItem("token");
         if (!token) return navigate("/login");
 
-        fetch(import.meta.env.VITE_BACKEND_URL + "/private", {
-            headers: { Authorization: "Bearer " + token }
+        fetch(import.meta.env.VITE_BACKEND_URL + "/api/private", {
+            headers: { Authorization: "Bearer " + token },
         })
             .then((res) => {
                 if (!res.ok) throw Error();
@@ -17,7 +17,7 @@ const Private = () => {
             .catch(() => navigate("/login"));
     }, []);
 
-    return <h1>Bienvenido a la sección privada</h1>;
+    return <h1>Zona Privada</h1>;
 };
 
 export default Private;

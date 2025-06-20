@@ -1,49 +1,81 @@
+# 📦 Instrucciones para Proyecto React + Flask en Codespaces
+
+Este proyecto implementa un sistema de autenticación completo utilizando:
+
+- React (Vite) para el frontend
+- Flask para el backend
+- JWT para autenticación
+- SQLite como base de datos local
+- GitHub Codespaces como entorno de desarrollo listo para usar
+
 ---
 
-## 🧪 Endpoints
+## ⚙️ Requisitos
+- Repositorio en GitHub
+- Codespaces habilitado en tu cuenta
 
-### POST `/user`
-Registrar un nuevo usuario  
-**Body JSON**:
-```json
-{
-  "email": "test@example.com",
-  "password": "123456"
-}
+---
+
+## 🚀 ¿Cómo usarlo?
+
+### 1. Sube el contenido del ZIP a un nuevo repositorio en GitHub
+
+1. Ve a [github.com](https://github.com)
+2. Crea un nuevo repositorio
+3. Sube el contenido de `react_flask_auth_ready.zip` descomprimido
+
+### 2. Abre Codespaces
+
+1. En tu repositorio, haz clic en el botón verde **Code**
+2. Selecciona **Codespaces** > **Create codespace on main**
+
+Codespaces instalará automáticamente:
+
+- Python 3.10
+- Flask y dependencias (con `requirements.txt`)
+- Node.js y dependencias del frontend (con `npm install`)
+
+---
+
+## 🧪 Ejecutar el proyecto
+
+### Backend (Flask)
+
+```bash
+cd backend
+python app.py
 ```
 
-### POST `/token`
-Iniciar sesión y obtener token  
-**Body JSON**:
-```json
-{
-  "email": "test@example.com",
-  "password": "123456"
-}
+Disponible en: `http://localhost:5000`
+
+### Frontend (React)
+
+```bash
+cd frontend
+npm run dev
 ```
 
-### GET `/private`
-Ruta protegida (requiere token en header `Authorization: Bearer <token>`)
+Disponible en: `http://localhost:5173`
 
 ---
 
-## 🧠 Funcionalidad
+## 🔐 Funcionalidades
 
-- Formulario de registro (`/signup`)
-- Formulario de login (`/login`)
-- Página privada (`/private`) solo visible si tienes un token válido
-- Botón de logout en el Navbar
-- Condicionales para mostrar "Login / Registrarse" o "Cerrar sesión"
+- `/signup`: Registro de nuevos usuarios
+- `/login`: Inicio de sesión con token JWT
+- `/private`: Página privada protegida (requiere token)
+- Navbar que cambia según si hay sesión activa o no
 
 ---
 
-## 📄 Notas
+## 🧠 Extras
 
-- Modifica el secreto `JWT_SECRET_KEY` en producción.
-- Cambia la base de datos SQLite por PostgreSQL si usas deploy.
+- `.env` ya configurado para backend y frontend
+- `.devcontainer` para que Codespaces configure todo automáticamente
+- Puedes usar SQLite sin configuraciones adicionales
 
 ---
 
 ## 🧑 Autor
 
-**Erik Ruiz - Full Stack Developer**
+Proyecto base creado para **Erik Ruiz - Full Stack Developer**

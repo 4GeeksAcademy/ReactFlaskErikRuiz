@@ -7,46 +7,40 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app)
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['JWT_SECRET_KEY'] = '1234'  
-
+app.config['JWT_SECRET_KEY'] = 'super-secret-key'
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-
 with app.app_context():
     db.create_all()
 
-
-@app.route('/user', methods=['POST'])
-def create_user():
+@app.route('/api/signup', methods=['POST'])
+def signup():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
     if not email or not password:
-        return jsonify({"msg": "Email y contraseña requeridos"}), 400
+        return jsonify({"msg": "Campos requeridos"}), 400
 
     if User.query.filter_by(email=email).first():
-        return jsonify({"msg": "El usuario ya existe"}), 400
+        return jsonify({"msg": "Usuario ya existe"}), 400
 
-    hashed_password = generate_password_hash(password)
-    new_user = User(email=email, password=hashed_password)
-    db.session.add(new_user)
+    hashed = generate_password_hash(password)
+    user = User(email=email, password=hashed)
+    db.session.add(user)
     db.session.commit()
 
-    return jsonify({"msg": "Usuario creado correctamente"}), 200
+    return jsonify({"msg": "Usuario creado"}), 200
 
-
-@app.route('/token', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get('email')
@@ -59,12 +53,11 @@ def login():
     token = create_access_token(identity=user.id)
     return jsonify(token=token), 200
 
-
-@app.route('/private', methods=['GET'])
+@app.route('/api/private', methods=['GET'])
 @jwt_required()
 def private():
-    current_user = get_jwt_identity()
-    return jsonify(msg="Acceso autorizado", user_id=current_user), 200
+    uid = get_jwt_identity()
+    return jsonify({"msg": "Acceso concedido", "user_id": uid}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
