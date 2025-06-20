@@ -15,5 +15,5 @@ const App = () => (
         </Routes>
     </BrowserRouter>
 );
-
+console.log("DEBUG ENV:", import.meta.env.VITE_BACKEND_URL);
 export default App;

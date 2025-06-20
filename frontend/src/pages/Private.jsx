@@ -1,23 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Private = () => {
     const navigate = useNavigate();
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
-        if (!token) return navigate("/login");
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        console.log("PRIVATE - BACKEND_URL:", backendUrl);
 
-        fetch(import.meta.env.VITE_BACKEND_URL + "/api/private", {
-            headers: { Authorization: "Bearer " + token },
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        fetch(backendUrl + "/api/private", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token
+            }
         })
-            .then((res) => {
-                if (!res.ok) throw Error();
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error("No autorizado");
+                }
+                const data = await res.json();
+                setMessage(data.msg || "Acceso autorizado");
             })
-            .catch(() => navigate("/login"));
+            .catch(() => {
+                sessionStorage.removeItem("token");
+                navigate("/login");
+            });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return <h1>Zona Privada</h1>;
+    const handleLogout = () => {
+        sessionStorage.removeItem("token");
+        navigate("/login");
+    };
+
+    return (
+        <div>
+            <h2>Zona Privada</h2>
+            <p>{message}</p>
+            <button onClick={handleLogout}>Cerrar sesión</button>
+        </div>
+    );
 };
 
 export default Private;
