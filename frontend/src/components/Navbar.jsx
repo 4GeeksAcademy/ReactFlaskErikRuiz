@@ -1,9 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const token = sessionStorage.getItem("token");
 
     const handleLogout = () => {
         sessionStorage.removeItem("token");
@@ -12,14 +11,10 @@ const Navbar = () => {
 
     return (
         <nav>
-            {token ? (
-                <button onClick={handleLogout}>Cerrar sesión</button>
-            ) : (
-                <>
-                    <button onClick={() => navigate("/login")}>Login</button>
-                    <button onClick={() => navigate("/signup")}>Registrarse</button>
-                </>
-            )}
+            <Link to="/signup">Registro</Link>
+            <Link to="/login">Login</Link>
+            <Link to="/private">Privado</Link>
+            <button onClick={handleLogout}>Cerrar sesión</button>
         </nav>
     );
 };

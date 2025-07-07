@@ -4,42 +4,35 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setError("");
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        console.log("BACKEND_URL:", backendUrl); // DEBUG: esto debe mostrar la URL del backend
-
-        let data = {};
         try {
-            const response = await fetch(backendUrl + "/api/login", {
+            const res = await fetch(`${backendUrl}/api/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-
-            try {
-                data = await response.json();
-            } catch {
-                data = { msg: "Respuesta vacía del servidor" };
-            }
-
-            if (response.ok) {
+            const data = await res.json();
+            if (res.ok) {
                 sessionStorage.setItem("token", data.token);
                 navigate("/private");
             } else {
-                alert(data.msg || "Credenciales inválidas");
+                setError(data.msg || "Credenciales inválidas");
             }
-        } catch (error) {
-            alert("Error de red: " + error.message);
+        } catch {
+            setError("Error de red");
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <h2>Iniciar Sesión</h2>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <input
                 type="email"
                 placeholder="Email"

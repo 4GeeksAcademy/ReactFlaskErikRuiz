@@ -4,42 +4,34 @@ import { useNavigate } from "react-router-dom";
 const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setError("");
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        console.log("BACKEND_URL:", backendUrl);
-
-        let data = {};
         try {
-            const response = await fetch(backendUrl + "/api/signup", {
+            const res = await fetch(`${backendUrl}/api/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-
-            try {
-                data = await response.json();
-            } catch {
-                data = { msg: "Respuesta vacía del servidor" };
-            }
-
-            if (response.ok) {
-                alert("Usuario registrado");
+            const data = await res.json();
+            if (res.ok) {
                 navigate("/login");
             } else {
-                alert(data.msg || "Error al registrar");
+                setError(data.msg || "Error al registrar");
             }
-        } catch (error) {
-            alert("Error de red: " + error.message);
+        } catch {
+            setError("Error de red");
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <h2>Registro</h2>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <input
                 type="email"
                 placeholder="Email"
